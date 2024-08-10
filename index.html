@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตรวจข้อสอบข้อฝน</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ตรวจข้อสอบข้อฝน</h2>
+    <form id="examForm">
+        <input type="text" id="name" placeholder="ชื่อ" required>
+        <input type="text" id="class" placeholder="ชั้น" required>
+        <input type="text" id="studentID" placeholder="เลขประจำตัวสอบ" required>
+        <input type="text" id="seatNumber" placeholder="เลขที่นั่งสอบ" required>
+        <input type="file" id="examFile" required>
+        <button type="button" onclick="submitForm()">ตรวจสอบ</button>
+    </form>
+</div>
+
+<script>
+    function submitForm() {
+        const name = document.getElementById('name').value;
+        const className = document.getElementById('class').value;
+        const studentID = document.getElementById('studentID').value;
+        const seatNumber = document.getElementById('seatNumber').value;
+        const examFile = document.getElementById('examFile').files[0];
+
+        if (!name || !className || !studentID || !seatNumber || !examFile) {
+            alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('class', className);
+        formData.append('studentID', studentID);
+        formData.append('seatNumber', seatNumber);
+        formData.append('examFile', examFile);
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("ตรวจสอบเรียบร้อย");
+            } else {
+                alert("เกิดข้อผิดพลาดในการตรวจสอบ");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>
